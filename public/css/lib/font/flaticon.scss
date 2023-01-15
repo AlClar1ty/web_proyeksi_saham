@@ -1,0 +1,41 @@
+$flaticon-font: "flaticon";
+
+@font-face {
+    font-family: $flaticon-font;
+    src: url("./flaticon.ttf?1bfffd4d9c08a5a25537bb44200fea9c") format("truetype"),
+url("./flaticon.woff?1bfffd4d9c08a5a25537bb44200fea9c") format("woff"),
+url("./flaticon.woff2?1bfffd4d9c08a5a25537bb44200fea9c") format("woff2"),
+url("./flaticon.eot?1bfffd4d9c08a5a25537bb44200fea9c#iefix") format("embedded-opentype"),
+url("./flaticon.svg?1bfffd4d9c08a5a25537bb44200fea9c#flaticon") format("svg");
+}
+
+i[class^="flaticon-"]:before, i[class*=" flaticon-"]:before {
+    font-family: flaticon !important;
+    font-style: normal;
+    font-weight: normal !important;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+$flaticon-map: (
+    "target": "\f101",
+    "bulb": "\f102",
+    "target-1": "\f103",
+    "diamond": "\f104",
+);
+
+.flaticon-target:before {
+    content: map-get($flaticon-map, "target");
+}
+.flaticon-bulb:before {
+    content: map-get($flaticon-map, "bulb");
+}
+.flaticon-target-1:before {
+    content: map-get($flaticon-map, "target-1");
+}
+.flaticon-diamond:before {
+    content: map-get($flaticon-map, "diamond");
+}
