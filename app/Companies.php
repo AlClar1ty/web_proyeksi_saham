@@ -16,6 +16,7 @@ class Companies extends Model
         "phone",
         "address",
         "website",
+        "watching",
     ];
 
     public function price()
