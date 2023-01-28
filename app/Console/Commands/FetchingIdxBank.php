@@ -41,10 +41,14 @@ class FetchingIdxBank extends Command
     {
         $dayNow = date('l');
         $hourNow = date('H');
-        $secondsNow = date('i');
-
-        if($dayNow != "Sunday" && $dayNow != "Suturday"){
+        $minuteNow = date('i');
+        if($dayNow != "Sunday" && $dayNow != "Saturday"){
             if(((int)$hourNow >= 9 && (int)$hourNow <= 11) || ((int)$hourNow >= 13 && (int)$hourNow <= 15)){
+                if((int)$hourNow == 15 && (int)$minuteNow == 30){
+                    echo "Not the time for fetching data.\n";
+                    return false;
+                }
+
                 $watcherCompany = Companies::where('watching', true)->get();
                 $bar = $this->output->createProgressBar(count($watcherCompany));
                 $bar->start();

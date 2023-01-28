@@ -81,7 +81,7 @@
                                     <td class="text-center">High</td>
                                     <td class="text-center">Low</td>
                                     <td class="text-center">Close</td>
-                                    {{-- <td class="text-center">Change</td> --}}
+                                    <td class="text-center">Change</td>
                                     <td class="text-right">Volume</td>
 
                                 </tr>
@@ -90,18 +90,42 @@
                                 @php $firstPrice = null; @endphp
                                 @foreach($company->price as $priceNya)
                                     <tr>
-                                        <td>{{ date('d/m/Y H:i', strtotime($priceNya['created_at'])) }}</td>
-                                        <td class="text-center">{{ $priceNya['open'] }}</td>
-                                        <td class="text-center">{{ $priceNya['high'] }}</td>
-                                        <td class="text-center">{{ $priceNya['low'] }}</td>
-                                        <td class="text-center">{{ $priceNya['close'] }}</td>
+                                        @php
+                                            if($firstPrice == null){
+                                                $changeNya = number_format($priceNya['close'] - $priceNya['open'], 2, ",", ".");
+                                                $classStyle = $changeNya < 0 ? "text-danger" : ($changeNya > 0 ? "text-success" : "text-primary");
+                                                $percentageNya = 0;
+                                                if($priceNya['close'] - $priceNya['open'] != 0){
+                                                    $percentageNya = number_format(($priceNya['close'] - $priceNya['open'])/$priceNya['open']*100, 2, ".", "");
+                                                }
+                                                $firstPrice = $priceNya['close'];
+                                            }
+                                            else{
+                                                $changeNya = number_format($priceNya['close'] - $firstPrice, 2, ",", ".");
+                                                $classStyle = $changeNya < 0 ? "text-danger" : ($changeNya > 0 ? "text-success" : "text-primary");
+                                                $percentageNya = 0;
+                                                if($priceNya['close'] - $firstPrice != 0){
+                                                    $percentageNya = number_format(($priceNya['close'] - $firstPrice)/$firstPrice*100, 2, ".", "");
+                                                }
+                                                $firstPrice = $priceNya['close'];
+                                            }
+                                        @endphp
 
-                                        @if($firstPrice == null)
-                                            {{-- <td class="text-center">{{ $priceNya['open'] }}</td> --}}
-                                        @else
-                                            {{-- <td class="text-center">{{ $priceNya['open'] }}</td> --}}
-                                        @endif
-                                        
+                                        <td>{{ date('d/m/Y H:i', strtotime($priceNya['created_at'])) }}</td>
+                                        <td class="text-center">{{ $priceNya['open'] }} IDR </td>
+                                        <td class="text-center">{{ $priceNya['high'] }} IDR </td>
+                                        <td class="text-center">{{ $priceNya['low'] }} IDR </td>
+                                        <td class="text-center">{{ $priceNya['close'] }} IDR </td>
+                                        <td class="text-center {{ $classStyle }}">
+                                            {{ $changeNya }} IDR 
+                                            @if($changeNya < 0)
+                                                <i class="mdi mdi-arrow-down-bold" style="font-size: 1em;"></i>
+                                            @elseif($changeNya > 0)
+                                                <i class="mdi mdi-arrow-up-bold" style="font-size: 1em;"></i>
+                                            @else
+                                                <i class="mdi mdi-equal" style="font-size: 1em;"></i>
+                                            @endif
+                                        </td>
                                         <td class="text-right">{{ $priceNya['volume'] }}</td>
                                     </tr>
                                 @endforeach
