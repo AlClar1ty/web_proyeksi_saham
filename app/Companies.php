@@ -21,6 +21,6 @@ class Companies extends Model
 
     public function price()
     {
-        return $this->hasOne('App\Prices', 'company_id', 'id');
+        return $this->hasMany('App\Prices', 'company_id', 'id');
     }
 }

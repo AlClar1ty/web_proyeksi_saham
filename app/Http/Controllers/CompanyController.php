@@ -57,34 +57,36 @@ class CompanyController extends Controller
     }
 
     public function show(Companies $company){
-    	if($company->price){
-    		$priceNya = $company->price;
-    		if(strtotime($priceNya['updated_at']) < strtotime("-30 minutes")){
-    			$curl = curl_init();
-		        curl_setopt($curl, CURLOPT_URL, 'https://api.goapi.id/v1/stock/idx/'. $company['ticker']);
-		        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "GET");
-		        curl_setopt($curl, CURLOPT_HTTPHEADER, array(
-		            'X-API-KEY: QC3yoHwxK9yzDw3EWXoLCe4arphgMQ',
-		            'Content-Type: application/json'
-		        ));
-		        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+    	if(count($company->price) > 0){
+    		if(!$company['watching']){
+    			$priceNya = $company->price->last();
+	    		if(strtotime($priceNya['updated_at']) < strtotime("-30 minutes")){
+	    			$curl = curl_init();
+			        curl_setopt($curl, CURLOPT_URL, 'https://api.goapi.id/v1/stock/idx/'. $company['ticker']);
+			        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "GET");
+			        curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+			            'X-API-KEY: QC3yoHwxK9yzDw3EWXoLCe4arphgMQ',
+			            'Content-Type: application/json'
+			        ));
+			        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
-		        $result = curl_exec($curl);
-		        $err = curl_error($curl);
-		        curl_close($curl);
+			        $result = curl_exec($curl);
+			        $err = curl_error($curl);
+			        curl_close($curl);
 
-		        if($result){
-		    		$result = json_decode($result);
-	    			$priceNya->open = $result->data->last_price->open;
-					$priceNya->high = $result->data->last_price->high;
-					$priceNya->low = $result->data->last_price->low;
-					$priceNya->close = $result->data->last_price->close;
-					$priceNya->volume = $result->data->last_price->volume;
-					$priceNya->save();
-		        }
-		        else{
-		        	dd($err);
-		        }
+			        if($result){
+			    		$result = json_decode($result);
+		    			$priceNya->open = $result->data->last_price->open;
+						$priceNya->high = $result->data->last_price->high;
+						$priceNya->low = $result->data->last_price->low;
+						$priceNya->close = $result->data->last_price->close;
+						$priceNya->volume = $result->data->last_price->volume;
+						$priceNya->save();
+			        }
+			        else{
+			        	dd($err);
+			        }
+	    		}
     		}
     	}
     	else{
@@ -114,14 +116,14 @@ class CompanyController extends Controller
 				        $company->save();
 		    		}
 
-		    		$company->price = new Prices();
-	    			$company->price->open = $result->data->last_price->open;
-					$company->price->high = $result->data->last_price->high;
-					$company->price->low = $result->data->last_price->low;
-					$company->price->close = $result->data->last_price->close;
-					$company->price->volume = $result->data->last_price->volume;
-					$company->price->company_id = $company->id;
-					$company->price->save();
+		    		$priceNya = new Prices();
+	    			$priceNya->open = $result->data->last_price->open;
+					$priceNya->high = $result->data->last_price->high;
+					$priceNya->low = $result->data->last_price->low;
+					$priceNya->close = $result->data->last_price->close;
+					$priceNya->volume = $result->data->last_price->volume;
+					$priceNya->company_id = $company->id;
+					$priceNya->save();
 		        }
 		        else{
 		        	dd($err);
@@ -131,7 +133,6 @@ class CompanyController extends Controller
     			dd("err");
     		}
     	}
-
         return view('detail', compact('company'));
     }
 }

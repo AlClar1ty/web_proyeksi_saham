@@ -37,19 +37,19 @@
                                     <p class="">Updated at:</p>
                                 </div>
                                 <div class="col-8 pl-0">
-                                    <h4 class="text-left mb-2 d-inline">{{ number_format($company->price['close'], 2, ".", ",") }}</h4>
+                                    <h4 class="text-left mb-2 d-inline">{{ number_format($company->price->last()['close'], 2, ".", ",") }}</h4>
                                     <p class="text-left d-inline">IDR</p>
-                                    <p class="mt-2 mb-0 {{ $company->price['close'] - $company->price['open'] < 0 ? "text-danger" : "text-success"}}">
-                                        {{ number_format($company->price['close'] - $company->price['open'], 2, ",", ".") }} IDR
-                                        ({{ ($company->price['close'] - $company->price['open']) != 0 ? number_format(($company->price['close'] - $company->price['open'])/$company->price['open']*100, 2, ".", "") : 0 }}%)
-                                        @if($company->price['close'] - $company->price['open'] < 0)
+                                    <p class="mt-2 mb-0 {{ $company->price->last()['close'] - $company->price->last()['open'] < 0 ? "text-danger" : "text-success"}}">
+                                        {{ number_format($company->price->last()['close'] - $company->price->last()['open'], 2, ",", ".") }} IDR
+                                        ({{ ($company->price->last()['close'] - $company->price->last()['open']) != 0 ? number_format(($company->price->last()['close'] - $company->price->last()['open'])/$company->price->last()['open']*100, 2, ".", "") : 0 }}%)
+                                        @if($company->price->last()['close'] - $company->price->last()['open'] < 0)
                                             <i class="mdi mdi-arrow-down-bold" style="font-size: 1em;"></i>
                                         @else
                                             <i class="mdi mdi-arrow-up-bold" style="font-size: 1em;"></i>
                                         @endif
                                         hari ini
                                     </p>
-                                    <p class="mb-0">{{ $company->price['updated_at'] }}</p>
+                                    <p class="mb-0">{{ $company->price->last()['updated_at'] }}</p>
                                 </div>
                             </div>                            
                         </div>
@@ -63,13 +63,50 @@
                                     <p class="m-1">Volume:</p>
                                 </div>
                                 <div class="col-8 pl-0">
-                                    <p class="m-1">{{ number_format($company->price['open'], 2, ".", ",") }} IDR</p>
-                                    <p class="m-1">{{ number_format($company->price['high'], 2, ".", ",") }} IDR</p>
-                                    <p class="m-1">{{ number_format($company->price['low'], 2, ".", ",") }} IDR</p>
-                                    <p class="m-1">{{ number_format($company->price['volume'], 0, ".", ",") }}</p>
+                                    <p class="m-1">{{ number_format($company->price->last()['open'], 2, ".", ",") }} IDR</p>
+                                    <p class="m-1">{{ number_format($company->price->last()['high'], 2, ".", ",") }} IDR</p>
+                                    <p class="m-1">{{ number_format($company->price->last()['low'], 2, ".", ",") }} IDR</p>
+                                    <p class="m-1">{{ number_format($company->price->last()['volume'], 0, ".", ",") }}</p>
                                 </div>
                             </div>                            
                         </div>
+                    </div>
+
+                    <div class="row mb-2 mx-5 border-bottom p-3">
+                        <table class="table">
+                            <thead style="background-color: lavender; font-weight: 800;">
+                                <tr>
+                                    <td class="text-left">Date</td>
+                                    <td class="text-center">Open</td>
+                                    <td class="text-center">High</td>
+                                    <td class="text-center">Low</td>
+                                    <td class="text-center">Close</td>
+                                    {{-- <td class="text-center">Change</td> --}}
+                                    <td class="text-right">Volume</td>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php $firstPrice = null; @endphp
+                                @foreach($company->price as $priceNya)
+                                    <tr>
+                                        <td>{{ date('d/m/Y H:i', strtotime($priceNya['created_at'])) }}</td>
+                                        <td class="text-center">{{ $priceNya['open'] }}</td>
+                                        <td class="text-center">{{ $priceNya['high'] }}</td>
+                                        <td class="text-center">{{ $priceNya['low'] }}</td>
+                                        <td class="text-center">{{ $priceNya['close'] }}</td>
+
+                                        @if($firstPrice == null)
+                                            {{-- <td class="text-center">{{ $priceNya['open'] }}</td> --}}
+                                        @else
+                                            {{-- <td class="text-center">{{ $priceNya['open'] }}</td> --}}
+                                        @endif
+                                        
+                                        <td class="text-right">{{ $priceNya['volume'] }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
 
                     <div class="row mb-2 mx-5 border-bottom p-3">
