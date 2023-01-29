@@ -48,6 +48,10 @@ class FetchingIdxBank extends Command
                     echo "Not the time for fetching data.\n";
                     return false;
                 }
+                if((int)$hourNow == 9 && (int)$minuteNow == 0){
+                    echo "Not the time for fetching data.\n";
+                    return false;
+                }
 
                 $watcherCompany = Companies::where('watching', true)->get();
                 $bar = $this->output->createProgressBar(count($watcherCompany));
@@ -85,6 +89,9 @@ class FetchingIdxBank extends Command
         curl_close($curl);
 
         if($result){
+            if(count($companyNya->price) > 70){
+                $companyNya->price->first()->delete();
+            }
             $result = json_decode($result);
             $priceNya = new Prices();
             $priceNya->open = $result->data->last_price->open;
