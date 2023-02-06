@@ -89,7 +89,7 @@ class FetchingIdxBank extends Command
         curl_close($curl);
 
         if($result){
-            if(count($companyNya->price) > 70){
+            if(count($companyNya->price) > 71){
                 $companyNya->price->first()->delete();
             }
             $result = json_decode($result);

@@ -88,7 +88,7 @@
                             </thead>
                             <tbody>
                                 @php $firstPrice = null; @endphp
-                                @foreach($company->price as $priceNya)
+                                @foreach($company->price as $keyNya => $priceNya)
                                     <tr>
                                         @php
                                             if($firstPrice == null){
@@ -108,6 +108,9 @@
                                                     $percentageNya = number_format(($priceNya['close'] - $firstPrice)/$firstPrice*100, 2, ".", "");
                                                 }
                                                 $firstPrice = $priceNya['close'];
+                                            }
+                                            if($keyNya == 0){
+                                                continue;
                                             }
                                         @endphp
 
